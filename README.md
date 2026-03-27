@@ -63,4 +63,4 @@ During development, I successfully navigated several critical engineering hurdle
    sqlite3 project.db < schema.sql
 3. **Launch the application:
 ```bash
-flask run   
+   flask run   
