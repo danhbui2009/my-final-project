@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %} Giao Chỉ Tiêu {% endblock %}
+
+{% block main %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0">Thiết lập KPI Tháng {{ now_month }}</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form action="/set_targets" method="post">
+                        <div class="mb-4 text-start">
+                            <label class="form-label fw-bold">Chọn nhân sự</label>
+                            <select class="form-select form-select-lg" name="staff_id" required>
+                                <option disabled selected value="">-- Chọn nhân viên/Trưởng nhóm --</option>
+                                {% for staff in staff_list %}
+                                    <option value="{{ staff.id }}">{{ staff.full_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-4 text-start">
+                            <label class="form-label fw-bold">Mục tiêu doanh số (VNĐ)</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text">₫</span>
+                                <input class="form-control" name="amount" type="number" placeholder="Ví dụ: 50000000" required>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-lg" type="submit">Xác nhận giao số</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

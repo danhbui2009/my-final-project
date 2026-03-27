@@ -1,0 +1,131 @@
+{% extends "layout.html" %}
+
+{% block title %} Dashboard {% endblock %}
+
+{% block main %}
+<div class="container-fluid px-4">
+
+    {% if level == 1 and summary %}
+        {% set total_pct = (summary.total_actual * 100 / summary.total_target) if summary.total_target > 0 else 0 %}
+        <div class="row mt-4 mb-2">
+            <div class="col-md-12">
+                <div class="card bg-dark text-white shadow border-0">
+                    <div class="card-body py-4">
+                        <h5 class="card-title text-uppercase small opacity-75">Tổng chỉ tiêu khu vực (Toàn quốc)</h5>
+                        <div class="d-flex align-items-end justify-content-between">
+                            <h2 class="display-5 mb-0 fw-bold">{{ summary.total_actual | usd }} / {{ summary.total_target | usd }}</h2>
+                            <span class="h3 mb-1">{{ total_pct | round(1) }}%</span>
+                        </div>
+                        <div class="progress mt-3" style="height: 15px; border-radius: 10px; background-color: rgba(255,255,255,0.2);">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated
+                                {% if total_pct < 50 %} bg-danger {% elif total_pct < 100 %} bg-warning text-dark {% else %} bg-success {% endif %}"
+                                role="progressbar"
+                                style="width: {{ total_pct if total_pct <= 100 else 100 }}%;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elif level == 2 and group_data %}
+        {% set group_pct = group_data.percentage | round(1) %}
+        <div class="row mt-4 mb-2">
+            <div class="col-md-12">
+                <div class="card bg-primary text-white shadow border-0">
+                    <div class="card-body py-4">
+                        <h5 class="card-title text-uppercase small opacity-75">Chỉ tiêu Tổng nhóm (Cá nhân + Thành viên)</h5>
+                        <div class="d-flex align-items-end justify-content-between">
+                            <h2 class="display-5 mb-0 fw-bold">{{ group_data.actual | usd }} / {{ group_data.target | usd }}</h2>
+                            <span class="h3 mb-1">{{ group_pct }}%</span>
+                        </div>
+                        <div class="progress mt-3" style="height: 15px; border-radius: 10px; background-color: rgba(255,255,255,0.2);">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated
+                                {% if group_pct < 50 %} bg-danger {% elif group_pct < 100 %} bg-warning text-dark {% else %} bg-success {% endif %}"
+                                role="progressbar"
+                                style="width: {{ group_pct if group_pct <= 100 else 100 }}%;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h1 class="h2 fw-bold text-secondary">Báo cáo chi tiết nhân sự</h1>
+
+        {% if level == 1 %}
+        <form action="/reset_all_targets" method="post"
+              onsubmit="return confirm('CẢNH BÁO: Thao tác này sẽ đưa TẤT CẢ chỉ tiêu tháng {{ month }} về 0. Bạn có chắc chắn không?');">
+            <button type="submit" class="btn btn-outline-danger btn-sm px-3 shadow-sm">
+                <i class="fas fa-redo-alt me-1"></i> Reset Toàn Đội
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+    <div class="card shadow border-0 mb-5 overflow-hidden">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0 text-nowrap">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Nhân viên</th>
+                        <th>Chỉ tiêu (Target)</th>
+                        <th>Thực đạt (Actual)</th>
+                        <th style="width: 25%;">Tiến độ</th>
+                        {% if level == 1 %}
+                            <th class="text-center">Thao tác</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in sales %}
+                    <tr>
+                        <td class="ps-4">
+                            <strong>{{ row.full_name }}</strong>
+                            <br>
+                            <small class="text-muted">
+                                {% if row.role_level == 2 %} Trưởng nhóm {% else %} Nhân viên {% endif %}
+                            </small>
+                        </td>
+                        <td>{{ row.target | usd }}</td>
+                        <td class="text-primary fw-bold">{{ row.actual | usd }}</td>
+                        <td>
+                            {% set pct = row.percentage | round(1) %}
+                            <div class="progress" style="height: 20px; border-radius: 10px; background-color: #f0f0f0;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated
+                                    {% if pct < 50 %} bg-danger {% elif pct < 100 %} bg-warning text-dark {% else %} bg-success {% endif %}"
+                                    role="progressbar"
+                                    style="width: {{ pct if pct <= 100 else 100 }}%;"
+                                    aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100">
+                                    {{ pct }}%
+                                </div>
+                            </div>
+                        </td>
+
+                        {% if level == 1 %}
+                        <td class="text-center">
+                            <form action="/reset_target" method="post"
+                                  onsubmit="return confirm('Đưa chỉ tiêu của {{ row.full_name }} về 0?');">
+                                <input type="hidden" name="staff_id" value="{{ row.user_id }}">
+                                <button type="submit" class="btn btn-sm btn-light text-danger border shadow-sm">
+                                    <i class="fas fa-undo-alt"></i> Reset
+                                </button>
+                            </form>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            <i class="fas fa-folder-open fa-3x mb-3 opacity-25"></i>
+                            <p>Chưa có dữ liệu cho tháng này.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

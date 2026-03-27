@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %} Đăng ký tài khoản {% endblock %}
+
+{% block main %}
+    <form action="/register" method="post">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="full_name" placeholder="Họ và Tên" type="text" required>
+        </div>
+        <div class="mb-3">
+            <input autocomplete="off" class="form-control mx-auto w-auto" name="username" placeholder="Tên đăng nhập" type="text" required>
+        </div>
+        <div class="mb-3">
+            <select class="form-control mx-auto w-auto" name="role_level" required>
+                <option disabled selected>-- Chọn cấp bậc --</option>
+                <option value="1">Cấp 1: ASM (Quản lý khu vực)</option>
+                <option value="2">Cấp 2: Trưởng nhóm (Unit Manager)</option>
+                <option value="3">Cấp 3: Nhân viên (Sales Agent)</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" name="password" placeholder="Mật khẩu" type="password" required>
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" name="confirmation" placeholder="Xác nhận mật khẩu" type="password" required>
+        </div>
+        <button class="btn btn-primary" type="submit">Đăng ký</button>
+    </form>
+{% endblock %}

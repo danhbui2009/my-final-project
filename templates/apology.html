@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Lỗi: {{ top }}
+{% endblock %}
+
+{% block main %}
+    <div class="container py-5">
+        <h1 class="display-1 fw-bold text-danger">{{ top }}</h1>
+
+        <h3 class="mb-4">{{ bottom }}</h3>
+
+        {# Phần hình ảnh meme - Nếu vẫn lỗi font trên ảnh, tạm ẩn dòng img này #}
+        <div class="mb-4">
+            <img alt="{{ top }}" class="border img-fluid shadow-sm"
+                 src="https://memegen.link/custom/{{ top | urlencode }}/Error.jpg?alt=https://i.imgur.com/CsCgN7L.png">
+        </div>
+
+        <div class="mt-4">
+            <a href="javascript:history.back()" class="btn btn-primary btn-lg">
+                <i class="fas fa-arrow-left"></i> Quay lại trang trước
+            </a>
+        </div>
+    </div>
+{% endblock %}

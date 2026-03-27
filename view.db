@@ -1,0 +1,13 @@
+CREATE VIEW sales_summary_view AS
+SELECT
+    u.id AS user_id,
+    u.full_name,
+    u.manager_id,
+    u.role_level,
+    t.amount AS target_amount,
+    IFNULL(SUM(s.amount), 0) AS actual_amount,
+    (IFNULL(SUM(s.amount), 0) / t.amount) * 100 AS performance_pct
+FROM users u
+JOIN targets t ON u.id = t.user_id
+LEFT JOIN sales s ON u.id = s.user_id
+GROUP BY u.id, t.month, t.year;
