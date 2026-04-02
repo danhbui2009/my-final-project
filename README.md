@@ -1,7 +1,7 @@
 # 📊 ASM Sales Tracker Pro
 **A Web-Based Management System for Modern Sales Operations**
 
-**Video Demo:** [Your YouTube Link Here]  
+**Video Demo:** (https://youtu.be/UiK2THjfBpY)]  
 **Author:** Bui Huu Danh  
 **Location:** Binh Dinh, Vietnam
 
